@@ -56,6 +56,7 @@ def train(
     wandb_log_model: str = "",  # options: false | true
     resume_from_checkpoint: str = None,  # either training checkpoint or final adapter
     prompt_template_name: str = "alpaca",  # The prompt template to use, will default to alpaca.
+    legacy: bool = False,  # LlamaTokenizer Legacy 
 ):
     if int(os.environ.get("LOCAL_RANK", 0)) == 0:
         print(
@@ -116,7 +117,7 @@ def train(
         device_map=device_map,
     )
 
-    tokenizer = LlamaTokenizer.from_pretrained(base_model)
+    tokenizer = LlamaTokenizer.from_pretrained(base_model, legacy=legacy)
 
     tokenizer.pad_token_id = (
         0  # unk. we want this to be different from the eos token
