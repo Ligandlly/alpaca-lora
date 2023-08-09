@@ -56,7 +56,8 @@ def train(
     wandb_log_model: str = "",  # options: false | true
     resume_from_checkpoint: str = None,  # either training checkpoint or final adapter
     prompt_template_name: str = "alpaca",  # The prompt template to use, will default to alpaca.
-    legacy: bool = False,  # LlamaTokenizer Legacy 
+    legacy: bool = False,  # LlamaTokenizer Legacy
+    fp_16: bool = False,  # Load Model in fp16
 ):
     if int(os.environ.get("LOCAL_RANK", 0)) == 0:
         print(
@@ -112,7 +113,7 @@ def train(
 
     model = LlamaForCausalLM.from_pretrained(
         base_model,
-        load_in_8bit=True,
+        load_in_8bit=not fp_16,
         torch_dtype=torch.float16,
         device_map=device_map,
     )
